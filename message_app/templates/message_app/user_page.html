@@ -1,0 +1,42 @@
+{% extends "message_app/header.html" %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <div class="container py-5">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h1 class="text-center">Welcome, {{ username }}!</h1>
+            </div>
+            <div class="card-body">
+                <p>Email: {{ email }}</p>
+            </div>
+            <div class="card-footer">
+                <ul class="nav justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <form method="POST"> {% csrf_token %}
+        Type the user to send the message to:
+        <input name="name">
+        <button name='search' type="submit"> Search </button>
+        </form>
+        <form method="POST"> {% csrf_token %}
+            <button name='history' type="submit"> Look my history</button>
+        </form>
+    </div>
+{% endblock %}
+</body>
+</html>
