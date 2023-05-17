@@ -1,17 +1,55 @@
 """ Rabin Cryptography system """
 
 from random import randint
-import os
+import random
 
-def generate_keypair(bits=2048):
-    random_generator = Random.new().read
-    rsa_key = RSA.generate(bits, random_generator)
-    return rsa_key.exportKey(), rsa_key.publickey().exportKey()
+def n_bit_random(bitsize):
+    """ Generates random integer with particular bitsize """
+    return randint(2**bitsize, 2**(bitsize + 1))
+
+
+def is_miller_rabin_passed(miller_rabin_candidate):
+	'''Run 200 iterations of Rabin Miller Primality test'''
+
+	maxDivisionsByTwo = 0
+	evenComponent = miller_rabin_candidate-1
+
+	while evenComponent % 2 == 0:
+		evenComponent >>= 1
+		maxDivisionsByTwo += 1
+	assert(2**maxDivisionsByTwo * evenComponent == miller_rabin_candidate-1)
+
+	def trialComposite(round_tester):
+		if pow(round_tester, evenComponent,
+			miller_rabin_candidate) == 1:
+			return False
+		for i in range(maxDivisionsByTwo):
+			if pow(round_tester, 2**i * evenComponent,
+				miller_rabin_candidate) == miller_rabin_candidate-1:
+				return False
+		return True
+
+	# Set number of trials here
+	numberOfRabinTrials = 200
+	for i in range(numberOfRabinTrials):
+		round_tester = random.randrange(2,
+					miller_rabin_candidate)
+		if trialComposite(round_tester):
+			return False
+	return True
+
+def generate_key(bitsize):
+    """ Generate key which = 3mod4 and is prime with paricular bitsize """
+    while True:
+        number = (n_bit_random(bitsize) * 4) + 3
+        if is_miller_rabin_passed(number):
+            break
+    return number
 
 def coeffs_gcd_extended(number1 , number2):
     """ Coeff using Euclide Algorithm """
-    number1 = number1
-    number2 = number2
+    number1_save = number1
+    number2_save = number2
 
     full_part = []
 
@@ -47,8 +85,13 @@ def coeffs_gcd_extended(number1 , number2):
         t_1 = t_next
 
         index += 1
-    if number1 > number2:
+
+    if number1_save < number2_save and abs(s_next) > abs(t_next):
         return s_next, t_next
+    if number1_save > number2_save and abs(s_next) < abs(t_next):
+        return s_next, t_next
+    if number1_save < number2_save and abs(s_next) < abs(t_next):
+        return t_next, s_next
     return t_next, s_next
 
 
@@ -56,11 +99,11 @@ class RabinCryptography:
     """ Rabin Cryptography """
     def generate_keys(self):
         """ Generates two numbers which satisfies condition p, q = 3mod(4)"""
-        self.__q_var = 191
-        self.__p_var = 139
-
+        self.__q_var = generate_key(50)
+        self.__p_var = generate_key(50)
+        print(self.__p_var, self.__q_var)
         while self.__p_var == self.__q_var:
-            self.__q_var = (randint(11230, 95737) * 4) + 3
+            self.__q_var = generate_key(5)
 
         return self.__q_var * self.__p_var
 
@@ -112,18 +155,18 @@ class RabinCryptography:
 
             root_1 = (a_var * self.__p_var * m_q_var +\
                       b_var * self.__q_var * m_p_var) %\
-                        (self.__p_var * self.__q_var)
+                        (self.n_var)
 
             root_2 = (a_var * self.__p_var * m_q_var_1 +\
                       b_var * self.__q_var * m_p_var_1) %\
-                        (self.__p_var * self.__q_var)
+                        (self.n_var)
 
             root_3 = (a_var * self.__p_var * m_q_var_1 +\
                       b_var * self.__q_var * m_p_var) %\
-                        (self.__p_var * self.__q_var)
+                        (self.n_var)
             root_4 = (a_var * self.__p_var * m_q_var +\
                       b_var * self.__q_var * m_p_var_1) %\
-                        (self.__p_var * self.__q_var)
+                        (self.n_var)
 
             roots.append(bin(root_1)[2:])
             roots.append(bin(root_2)[2:])
@@ -141,6 +184,6 @@ class RabinCryptography:
 
 cryptosystem = RabinCryptography()
 key = cryptosystem.n_var
-a = cryptosystem.encode(key, "hEANJSDANJSDB AHSDB AHSBD AHSDbasjhbd hasbdj BJsgvd ")
+a = cryptosystem.encode(key, "h ajsdhba sdjh ashbd ad hjasd ajsdk ")
 # print(a)
 print(cryptosystem.decode(a))
