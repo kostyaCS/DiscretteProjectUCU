@@ -1,7 +1,12 @@
 """ Rabin Cryptography system """
 
 from random import randint
+import os
 
+def generate_keypair(bits=2048):
+    random_generator = Random.new().read
+    rsa_key = RSA.generate(bits, random_generator)
+    return rsa_key.exportKey(), rsa_key.publickey().exportKey()
 
 def coeffs_gcd_extended(number1 , number2):
     """ Coeff using Euclide Algorithm """
