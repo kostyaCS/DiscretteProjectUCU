@@ -2,6 +2,8 @@
 
 from random import randint
 import random
+from PIL import Image
+import numpy as np
 
 def n_bit_random(bitsize):
     """ Generates random integer with particular bitsize """
@@ -114,8 +116,12 @@ class RabinCryptography:
     def encode(key, message):
         """ Encode message with passed key """
         send_coded = []
+
         for symbol in message:
-            ord_symbol = ord(symbol)
+            if isinstance(symbol, str):
+                ord_symbol = ord(symbol)
+            else:
+                ord_symbol = symbol
             bin_symbol = bin(ord_symbol)[2:] * 2
             new_ord = int(bin_symbol, 2)
             new_bin = (new_ord ** 2) % key
@@ -137,7 +143,7 @@ class RabinCryptography:
 
         return result
 
-    def decode(self, message):
+    def decode(self, message, image = False):
         """ Decode message using key and codded message """
         line = ""
 
@@ -178,12 +184,70 @@ class RabinCryptography:
                     continue
                 half = len(root) // 2
                 if root[:half] == root[half:]:
-                    line += chr(int(root[:half], 2))
+                    if image:
+                        line += str(int(root[:half], 2))
+                    else:
+                        line += chr(int(root[:half], 2))
                     break
         return line
 
+    def encrypt_image(self, image):
+        """ Encrypts image """
+        # print(image)
+        # height, width, a = image.shape
+        width, height = image.size
+        pixels = list(image.getdata())
+        print(len(pixels))
+        print(len(pixels[0]))
+
+        # print(len(pixels[0]))
+
+        pixels_encoded = []
+        for pixel in pixels:
+            pixel_encoded = []
+            for rgb in pixel:
+                pixel_encoded.append(int(self.encode(self.n_var, [rgb])[0]))
+            pixels_encoded.append(pixel_encoded)
+        return self.encode(self.n_var, [height]) +\
+            self.encode(self.n_var, [width]) +\
+            pixels_encoded
+
+    def decode_image(self, coded):
+        """ Decode image """
+        height = int(self.decode([coded[0]], image=True))
+        width = int(self.decode([coded[1]], image=True))
+
+        coded = coded[2:]
+        pixels = []
+        # print(len(coded))
+        for index, element in enumerate(coded):
+            pixel = []
+            # print(index)
+            for code in element:
+                pixel.append(self.decode([code], image = True))
+            pixels.append(tuple(pixel))
+        # print(pixels)
+        pixels = [pixels[i * width: (i+1) * width] for i in range(height)]
+        array = np.array(pixels, dtype=np.uint8)
+        # print(array)
+        # print(len(pixels))
+        # print(len(pixels[0]))
+        # print(array.shape)
+        # array = [array[i * 343: (i+1) * 343] for i in range(283)]
+        print(len(array))
+        print(len(array[0]))
+
+        new_image = Image.fromarray(array)
+        new_image.save('new.jpeg')
+
+
+img=Image.open("a.jpg")
+
 cryptosystem = RabinCryptography()
+code = cryptosystem.encrypt_image(img)
+cryptosystem.decode_image(code)
 key = cryptosystem.n_var
+
 a = cryptosystem.encode(key, "h ajsdhba sdjh ashbd ad hjasd ajsdk ")
 # print(a)
 print(cryptosystem.decode(a))
