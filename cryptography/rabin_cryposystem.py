@@ -193,14 +193,12 @@ class RabinCryptography:
 
     def encrypt_image(self, image):
         """ Encrypts image """
-        # print(image)
-        # height, width, a = image.shape
+
         width, height = image.size
         pixels = list(image.getdata())
         print(len(pixels))
         print(len(pixels[0]))
 
-        # print(len(pixels[0]))
 
         pixels_encoded = []
         for pixel in pixels:
@@ -219,27 +217,22 @@ class RabinCryptography:
 
         coded = coded[2:]
         pixels = []
-        # print(len(coded))
-        for index, element in enumerate(coded):
+
+        for element in coded:
             pixel = []
-            # print(index)
+
             for code in element:
                 pixel.append(self.decode([code], image = True))
             pixels.append(tuple(pixel))
-        # print(pixels)
+
         pixels = [pixels[i * width: (i+1) * width] for i in range(height)]
         array = np.array(pixels, dtype=np.uint8)
-        # print(array)
-        # print(len(pixels))
-        # print(len(pixels[0]))
-        # print(array.shape)
-        # array = [array[i * 343: (i+1) * 343] for i in range(283)]
+
         print(len(array))
         print(len(array[0]))
 
         new_image = Image.fromarray(array)
         new_image.save('new.jpeg')
-
 
 img=Image.open("a.jpg")
 
