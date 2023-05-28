@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/greetings.css' %}">
+    <link rel="icon" href="{% static './img/chat.png' %}">
+    <title>ChatApp</title>
+</head>
+<body>
+    <div class="container">
+        <div class="main-elements">
+            <img src="{% static 'img/Illustration.svg' %}" alt="" class="">
+            <div class="text mt42">Connect easily with your family and friends over countries</div>
+            <form method="POST"> {% csrf_token %}
+            <button class="mt42">
+                Start Messaging
+            </form>
+            </button>
+        </div>
+    </div>
+</body>
+</html>

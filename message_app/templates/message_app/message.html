@@ -1,15 +1,18 @@
-{% extends "message_app/header.html" %}
 {% load static %}
 
-{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=, initial-scale=1.0">
-  <title>Document</title>
+  <link rel="icon" href="{% static './img/chat.png' %}">
+  <script src="https://kit.fontawesome.com/5d952f6b40.js" crossorigin="anonymous"></script>
+  <title>{{ receiver.username }}</title>
   <style>
+    body{
+      padding: 0;
+    }
     .message-page {
       display: flex;
       flex-direction: column;
@@ -22,7 +25,7 @@
       flex-direction: column;
       align-items: flex-start;
       margin-top: 30px;
-      margin-bottom: 30px;
+      margin-bottom: 100px;
       width: 80%;
     }
   
@@ -48,65 +51,257 @@
       font-size: 12px;
       margin-top: 5px;
     }
-  
-    .message-form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 30px;
-      margin-bottom: 30px;
-      width: 80%;
+
+    form label{
+      display: none;
     }
-  
-    .message-form input[type="text"] {
+
+    .header{
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #e0e0e0;
       width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+      height: 60px;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: left;
     }
-  
-    .message-form input[type="submit"] {
+
+    .back-button{
+      font-size: 30px;
+      color: black;
+    }
+
+    .back-button:hover{
+      transition: .5s;
+      color: #0062cc;
+    }
+
+    .back-button-text{
+      margin-left: 20px;
+    }
+
+    .form-container{
+      width: 100%;
+      height: 80px;
+      background-color: #e0e0e0;
+      padding: 0px;
+      position: fixed;
+      bottom: 0;
+    }
+
+    form {
+      padding: 0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0;
+    }
+    
+    form textarea{
+      width: 300px;
+      height: 30px;
+      border: 1px solid #ccc;
       padding: 10px;
       border-radius: 5px;
-      background-color: #007bff;
+      background-color: #f7f7f7;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      resize: none; /* Allow vertical resizing of the textarea */
+      font-family: Arial, sans-serif;
+
+    }
+
+    form #id_image{
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #f7f7f7;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .submit-button{
+      display: inline-block;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      background-color: #e0e0e0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
+    }
+
+    .submit-button:hover{
+      background-color: #c0c0c0;
+    }
+
+    .submit-button:active{
+      background-color: #a0a0a0;
+    }
+
+    .back-button-text{
+      font-size: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .image-sent{
+      max-width: 300px;
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.589);
+      z-index: 9999;
+    }
+
+    .popup-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: transparent;
+      padding: 20px;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .close-popup-i{
+      color: white;
+    }
+    
+    /*////////////////////////////////*/
+    .message-input {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      resize: none;
+      font-size: 16px;
+      outline: none;
+    }
+
+    /* Additional styling for the submit button */
+    .message-submit-button {
+      background-color: #0088cc;
       color: #fff;
       border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
       cursor: pointer;
     }
-  
-    .message-form input[type="submit"]:hover {
-      background-color: #0062cc;
-    }
+
   </style>
 </head>
+
 <body>
-  
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <i onclick="closePopup()" class="fa-solid fa-circle-xmark close-popup-i"></i>
+      <div id="image-container" class="image-container">
+
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    var fileInput = document.getElementById('id_file'); // Replace 'id_file' with the actual ID of your file input field
+    
+    fileInput.addEventListener('change', function() {
+        if (fileInput.files.length > 0) {
+          fileInput.nextElementSibling.textContent = fileInput.files[0].name;
+        } else {
+          fileInput.nextElementSibling.textContent = '';
+        }
+      });
+    });
+
+    function openPopup(imageUrl){
+      var popup = document.getElementById('popup');
+      popup.style.display = 'block';
+      document.body.style.overflow = 'hidden'; // Disable scrolling
+      
+      var image = document.createElement('img');
+      image.src = imageUrl;  
+      
+      if (image.height > 700){
+        image.style.height = '700px';
+      }else if (image.width > 700){
+        image.style.width = '700px';
+      }
+      // image.style.width = '00px';
+      // image.style.height = '700px';
+
+      var popupContent = document.getElementById('image-container');
+
+      popupContent.appendChild(image);
+    }
+
+    function closePopup(){
+      var popup = document.getElementById('popup');
+      popup.style.display = 'none';
+      document.body.style.overflow = 'auto'; // Disable scrolling
+
+      imageContainer = document.getElementById('image-container')
+
+      var image = document.querySelector('#image-container img');
+      imageContainer.removeChild(image)
+    }
+
+  </script>
+
+  <div class="header">
+    <a class="back-button" href="/chat_history/{{request.user.username}}"><i class="fa-solid fa-circle-arrow-left"></i></a>
+    <div class="back-button-text"><i class="fa-solid fa-user-circle"></i> {{ receiver.username }}</div>
+  </div>
+
   <div class="message-page">
-    <h2>Message with {{ receiver.username }}</h2>
+    <!-- <h2>Message with {{ receiver.username }}</h2> -->
     <div class="message-history">
-      {% for message in messages %}
-        {% if message.message.sender == request.user %}
+      {% for message, sender, date, photo in messages %}
+        {% if sender == request.user %}
           <div class="message sent">
-            <p>{{ message.message.text }}</p>
-            <p class="small">{{ message.date }}</p>
+            <p>{{ message }}</p>
+            {% if photo %}
+              <!-- <img onclick="openPopup('{{photo}}')" class="image-sent open-popup" src="{{ photo }}" alt="Message image"> -->
+              <img onclick="openPopup('data:image/jpg;base64,{{ photo }}')" class="image-sent open-popup" src="data:image/jpg;base64,{{ photo }}" alt="Message image">
+              {% endif %}
+            <p class="small">{{ date }}</p>
           </div>
         {% else %}
           <div class="message received">
-            <p>{{ message.message.text }}</p>
-            <p class="small">{{ message.date }}</p>
+            <p>{{ message }}</p>
+            {% if photo %}
+              <!-- <img onclick="openPopup('{{photo}}')" class="image-sent open-popup" src="{{ photo }}" alt="Message image"> -->
+              <img onclick="openPopup('data:image/jpg;base64,{{ photo }}')" class="image-sent open-popup" src="data:image/jpg;base64,{{ photo }}" alt="Message image">
+            {% endif %}
+            <p class="small">{{ date }}</p>
           </div>
         {% endif %}
       {% empty %}
         <p>No messages yet.</p>
       {% endfor %}
     </div>
-
-    <h2>Send Message</h2>
-    <form method="post">
+  </div>
+  <div class="form-container">
+    <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}
-      <input type="submit" value="Send">
+      <input id="sendButton" class="message-submit-button" type="submit" value="Send">
     </form>
   </div>
-{% endblock %}

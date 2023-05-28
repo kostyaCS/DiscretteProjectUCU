@@ -1,6 +1,4 @@
-{% extends "message_app/header.html" %}
 {% load static %}
-{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,16 +7,150 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Page</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" href="{% static './img/chat.png' %}">
+    <script src="https://kit.fontawesome.com/5d952f6b40.js" crossorigin="anonymous"></script>
 </head>
+
+<style>
+    body {
+        padding: 0;
+        background-color: white;
+    }
+
+    .header{
+      background-color: white;
+      width: 100%;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: left;
+    }
+
+    .back-button{
+      margin-top: 20px;
+      font-size: 30px;
+      color: black;
+    }
+
+    .back-button:hover{
+      transition: .5s;
+      color: #0062cc;
+    }
+
+    .back-button-text{
+      width: 100%;
+      height: 100%;
+      background-color: #a0a0a0;
+      line-height: 50px;
+      border-radius: 10px;
+    }
+
+    .header-text{
+        margin-top: 20px;
+        margin-left: 20px;
+        font-size: 30px;
+        color: black;
+    }
+
+    .profile-container{
+        width: 100%;
+        height: 85vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .profile-card {
+            width: 300px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-image {
+            font-size: 50px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+        }
+
+        .profile-name {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .profile-description {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .profile-social a {
+            display: inline-block;
+            margin-right: 10px;
+            color: #888;
+            transition: color 0.3s ease;
+        }
+
+        .profile-social a:hover {
+            color: #333;
+        }
+
+        .profile-buttons {
+            margin-top: 20px;
+        }
+
+        .profile-buttons form{
+            margin-top: 20px;
+        }
+
+        .logout-button,
+        .delete-button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #3498db;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 2px;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-button{
+            margin-top: 40px;
+        }
+
+        .submit-button{
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            margin: 0;
+            font-size: inherit;
+            cursor: pointer;
+        }
+    
+        .logout-button:hover,
+        .delete-button:hover {
+            background-color: #2980b9;
+        }
+
+
+</style>
+
 <body>
 
-    <div class="container py-5">
+    <!-- <div class="container py-5">
         <div class="card shadow-lg">
             <div class="card-header">
                 <h1 class="text-center">Welcome, {{ username }}!</h1>
             </div>
             <div class="card-body">
                 <p>Email: {{ email }}</p>
+                <p>Your public key: {{ key }}</p>
             </div>
             <div class="card-footer">
                 <ul class="nav justify-content-end">
@@ -29,14 +161,38 @@
             </div>
         </div>
         <form method="POST"> {% csrf_token %}
-        Type the user to send the message to:
-        <input name="name">
-        <button name='search' type="submit"> Search </button>
-        </form>
-        <form method="POST"> {% csrf_token %}
             <button name='history' type="submit"> Look my history</button>
         </form>
+        <form method="POST">{% csrf_token %}
+            <button name="delete" type="submit">Delete my account</button>
+        </form>
+    </div> -->
+    <div class="header">
+        <a class="back-button" href="/chat_history/{{request.user.username}}"><i class="fa-solid fa-circle-arrow-left"></i></a>
+        <div class="header-text">Profile</div>
     </div>
-{% endblock %}
+
+    <div class="profile-container">
+        <div class="profile-card">
+            <i class="profile-image fa-solid fa-user-circle"></i>
+            <h2 class="profile-name">{{request.user.username}}</h2>
+            <p class="profile-description">Public key: {{key}}</p>
+            <div class="profile-social">
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-linkedin"></i></a>
+              <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+            <div class="profile-buttons">
+                <a class="nav-link" href="/logout"><button class="logout-button submit-button" type="submit">Log Out</button></a> 
+                <form method="POST">{% csrf_token %}
+                    <button name="delete" class="delete-button submit-button" type="submit" >Delete Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    
+      
+
 </body>
 </html>

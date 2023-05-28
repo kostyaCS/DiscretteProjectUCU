@@ -5,29 +5,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static './img/chat.png' %}">
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+    <script src="https://kit.fontawesome.com/5d952f6b40.js" crossorigin="anonymous"></script>
+    <title>Register</title>
 </head>
 <body>
-  
-  <div class="container py-5">
-    <div class="card shadow-lg">
-      <div class="card-header">
-        <h1 class="text-center">Register</h1>
-      </div>
-      <div class="card-body">
-        <form method="POST">
-          {% csrf_token %}
-          {{ register_form|crispy }}                    
-          <button class="btn btn-primary btn-block mt-4" type="submit">Register</button>
-        </form>
-        <p class="text-center mt-3">If you already have an account, <a href="/login">login</a> instead.</p>
-      </div>
+    <div class="container" style="height: 85vh;">
+        <div class="main-elements">
+            <div class="image-container">
+                <i style='font-size: 100px;'class="fa fa-user-circle"></i>
+            </div>
+            <form method="POST">
+              {% csrf_token %}
+              {{ register_form|crispy }}                    
+                <button class="mt31">
+                    Register
+                </button>
+            </form>
+            <div class="text mt18">
+                Already have an acount? <a href="/login">Login</a>
+            </div>
+        </div>
     </div>
-  </div>
-  {% endblock %}
+    {% endblock %}
 </body>
 </html>

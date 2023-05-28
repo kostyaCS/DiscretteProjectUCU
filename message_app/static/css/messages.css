@@ -1,0 +1,127 @@
+@font-face {
+    font-family: "Mulish";
+    src: url("../fonts/Mulish-Black.ttf");
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.scroll-view {
+    height: 100%;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100px;
+    width: 100%;
+}
+
+.header-text {
+    font-size: 20px;
+    font-weight: bold;
+    font-family: "Mulish";
+    margin-left: 20px;
+    line-height: 40px;
+}
+
+.header-icon {
+    font-size: 40px;
+    color: #333;
+    margin-right: 20px;
+}
+
+input{
+    border: none;
+    width: 98%;
+    height: 36px;
+    background-color: #F7F7FC;
+    font-family: "Mulish";
+    text-indent: 10px;
+    margin: auto;
+}
+
+.input-container{
+    width: 100%;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+}
+
+.chat-box{
+    width: 100%;
+    height: 68px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.chat-box:hover{
+    background-color: #F7F7FC;
+    transition: .5s;
+    cursor: pointer;
+}
+
+.chat-box img{
+    width: 5%;
+    float: left;
+}
+
+.chat-box .name{
+    float: left;
+    width: 95%;
+    font-family: "Mulish";
+    font-size: 20px;
+}
+
+.underline{
+    width: 100%;
+    height: 5px;
+    color: black;
+}
+
+.go-to-chat-button{
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+    margin-right: 20px;
+}
+
+.go-to-chat-button:hover {
+    background-color: #c0c0c0;
+}
+
+.go-to-chat-button:active {
+    background-color: #a0a0a0;
+}
+
+.header-icon a{
+    text-decoration: none;
+    color: black;
+}
+
+.header-icon a:hover{
+    color: blue;
+    transition: .5s;
+}
+
+.line{
+    width: 100%;
+    height: 1px;
+    background-color: #EDEDED;
+    margin: auto;
+    margin-top: 20px;
+}

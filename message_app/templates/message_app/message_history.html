@@ -1,48 +1,68 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Message History</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f8f8;
-      color: #333;
-    }
-    h1 {
-      text-align: center;
-      margin-top: 50px;
-    }
-    a {
-      color: #007bff;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .message-container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    }
-    .message-container p {
-      font-size: 16px;
-      line-height: 1.5;
-      margin-bottom: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/messages.css' %}">
+    <script src="https://kit.fontawesome.com/5d952f6b40.js" crossorigin="anonymous"></script>
+    <title>Messages</title>
+    <link rel="icon" href="{% static './img/chat.png' %}">
 </head>
+<style>
+    .search-container{
+        width: 95%;
+        margin: auto;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .search-button{
+      display: inline-block;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      background-color: #e0e0e0;
+      /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); */
+      transition: background-color 0.3s ease;
+    }
+
+    .search-button:hover{
+      background-color: #c0c0c0;
+    }
+
+    .search-button:active{
+      background-color: #a0a0a0;
+    }
+
+</style>
 <body>
-  <h1>Message History</h1>
-  <div class="message-container">
-    {% for i in user %}
-      <p><a href="/message/{{i}}">{{i}}</a></p>
-    {% endfor %}
-  </div>
+    <div class="header">
+        <div class="header-text">Messages</div>
+        <div class="header-icon">
+            <a href="/user"><i class="fa fa-user-circle"></i></a>
+        </div>
+    </div>
+        <form method="POST"> {% csrf_token %}
+            <div class="search-container">
+                <input name="name" placeholder="Search for user">
+                <button class="search-button" name='search' type="submit"> Search </button>
+            </div>
+        </form>
+        {% for i in user %}
+        <form method="POST">{% csrf_token %}
+            <div class="chat-box">
+                <i style="font-size: 35px; margin-left: 10px;" class="fa fa-user-circle"></i>
+                <div class="name" style="margin-left: 10px">{{i}}</div>
+                <button class="go-to-chat-button" type="submit" style="margin-right: 20px;" name="{{i}}">Go to chat</button>
+            </div>
+        </form>
+
+        <div class="line"></div>
+     {% endfor %}
 </body>
 </html>

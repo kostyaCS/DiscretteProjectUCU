@@ -1,3 +1,4 @@
+from typing import Any, Dict
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -23,4 +24,4 @@ class FriendSearchForm(forms.Form):
 
 class MessageForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea)
-
+    image = forms.ImageField(required=False)
