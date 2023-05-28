@@ -56,7 +56,7 @@ class RSA:
         private = pow(public, -1, phi)
         return ((public, prime_product), (private, prime_product))
 
-    def encrypt_message(self, message,):
+    def encrypt_message(self, message):
         """Encrypt message using private key"""
         encrypt = []
         for char in message:
